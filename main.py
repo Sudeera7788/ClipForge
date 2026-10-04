@@ -19,6 +19,24 @@ from PySide6.QtWidgets import (
 )
 
 
+# =========================================================
+# RESOURCE PATH
+# Works in normal Python mode and PyInstaller --onefile mode
+# =========================================================
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    return os.path.join(base_path, relative_path)
+
+
+# =========================================================
+# DOWNLOAD WORKER
+# =========================================================
+
 class DownloadWorker(QThread):
 
     progress = Signal(int)
@@ -105,7 +123,10 @@ class DownloadWorker(QThread):
 
         try:
 
-            # MP3 AUDIO
+            # =================================================
+            # MP3 AUDIO MODE
+            # =================================================
+
             if self.download_type == "MP3 Audio":
 
                 bitrate = self.quality.replace(
@@ -127,7 +148,6 @@ class DownloadWorker(QThread):
                     "ffmpeg_location":
                         self.ffmpeg_path,
 
-                    # Prevent full playlist / YouTube Mix downloads
                     "noplaylist":
                         True,
 
@@ -149,7 +169,10 @@ class DownloadWorker(QThread):
                     ],
                 }
 
-            # MP4 VIDEO
+            # =================================================
+            # MP4 VIDEO MODE
+            # =================================================
+
             else:
 
                 if self.quality == "1080p":
@@ -199,7 +222,6 @@ class DownloadWorker(QThread):
                     "ffmpeg_location":
                         self.ffmpeg_path,
 
-                    # Prevent full playlist / YouTube Mix downloads
                     "noplaylist":
                         True,
 
@@ -224,6 +246,10 @@ class DownloadWorker(QThread):
                 str(error)
             )
 
+
+# =========================================================
+# MAIN WINDOW
+# =========================================================
 
 class MainWindow(QWidget):
 
@@ -255,9 +281,9 @@ class MainWindow(QWidget):
 
         main_layout.setSpacing(12)
 
-        # -------------------------
-        # APP TITLE
-        # -------------------------
+        # =====================================================
+        # TITLE
+        # =====================================================
 
         title = QLabel(
             "ClipForge"
@@ -288,9 +314,9 @@ class MainWindow(QWidget):
             subtitle
         )
 
-        # -------------------------
+        # =====================================================
         # URL
-        # -------------------------
+        # =====================================================
 
         url_label = QLabel(
             "Video URL"
@@ -340,9 +366,9 @@ class MainWindow(QWidget):
             url_layout
         )
 
-        # -------------------------
+        # =====================================================
         # DOWNLOAD TYPE
-        # -------------------------
+        # =====================================================
 
         type_label = QLabel(
             "Download As"
@@ -367,9 +393,9 @@ class MainWindow(QWidget):
             self.type_combo
         )
 
-        # -------------------------
+        # =====================================================
         # QUALITY
-        # -------------------------
+        # =====================================================
 
         quality_label = QLabel(
             "Quality"
@@ -387,9 +413,9 @@ class MainWindow(QWidget):
 
         self.update_quality_options()
 
-        # -------------------------
-        # DOWNLOAD FOLDER
-        # -------------------------
+        # =====================================================
+        # SAVE LOCATION
+        # =====================================================
 
         folder_label = QLabel(
             "Save Location"
@@ -431,9 +457,9 @@ class MainWindow(QWidget):
             folder_layout
         )
 
-        # -------------------------
+        # =====================================================
         # DOWNLOAD BUTTON
-        # -------------------------
+        # =====================================================
 
         self.download_button = QPushButton(
             "Download"
@@ -458,9 +484,9 @@ class MainWindow(QWidget):
             self.download_button
         )
 
-        # -------------------------
+        # =====================================================
         # PROGRESS BAR
-        # -------------------------
+        # =====================================================
 
         self.progress_bar = QProgressBar()
 
@@ -472,9 +498,9 @@ class MainWindow(QWidget):
             self.progress_bar
         )
 
-        # -------------------------
+        # =====================================================
         # STATUS
-        # -------------------------
+        # =====================================================
 
         self.status_label = QLabel(
             "Ready"
@@ -484,9 +510,9 @@ class MainWindow(QWidget):
             self.status_label
         )
 
-        # -------------------------
+        # =====================================================
         # BOTTOM BUTTONS
-        # -------------------------
+        # =====================================================
 
         bottom_layout = QHBoxLayout()
 
@@ -522,9 +548,9 @@ class MainWindow(QWidget):
             main_layout
         )
 
-    # -------------------------
-    # UPDATE QUALITY OPTIONS
-    # -------------------------
+    # =========================================================
+    # QUALITY OPTIONS
+    # =========================================================
 
     def update_quality_options(self):
 
@@ -548,9 +574,9 @@ class MainWindow(QWidget):
                 "480p"
             ])
 
-    # -------------------------
-    # PASTE URL
-    # -------------------------
+    # =========================================================
+    # PASTE
+    # =========================================================
 
     def paste_url(self):
 
@@ -560,9 +586,9 @@ class MainWindow(QWidget):
             clipboard.text().strip()
         )
 
-    # -------------------------
-    # CLEAR URL
-    # -------------------------
+    # =========================================================
+    # CLEAR
+    # =========================================================
 
     def clear_url(self):
 
@@ -576,9 +602,9 @@ class MainWindow(QWidget):
             "Ready"
         )
 
-    # -------------------------
+    # =========================================================
     # CHOOSE FOLDER
-    # -------------------------
+    # =========================================================
 
     def choose_folder(self):
 
@@ -595,9 +621,9 @@ class MainWindow(QWidget):
                 folder
             )
 
-    # -------------------------
+    # =========================================================
     # OPEN DOWNLOAD FOLDER
-    # -------------------------
+    # =========================================================
 
     def open_download_folder(self):
 
@@ -612,9 +638,9 @@ class MainWindow(QWidget):
                 ]
             )
 
-    # -------------------------
-    # ABOUT CLIPFORGE
-    # -------------------------
+    # =========================================================
+    # ABOUT
+    # =========================================================
 
     def show_about(self):
 
@@ -674,9 +700,9 @@ class MainWindow(QWidget):
             """
         )
 
-    # -------------------------
+    # =========================================================
     # START DOWNLOAD
-    # -------------------------
+    # =========================================================
 
     def start_download(self):
 
@@ -700,10 +726,10 @@ class MainWindow(QWidget):
             self.quality_combo.currentText()
         )
 
-        ffmpeg_path = os.path.join(
-            os.path.dirname(
-                os.path.abspath(__file__)
-            ),
+        # This now works both:
+        # 1. while developing with Python
+        # 2. inside a PyInstaller --onefile EXE
+        ffmpeg_path = resource_path(
             "bin"
         )
 
@@ -745,9 +771,9 @@ class MainWindow(QWidget):
 
         self.worker.start()
 
-    # -------------------------
+    # =========================================================
     # UPDATE PROGRESS
-    # -------------------------
+    # =========================================================
 
     def update_progress(
         self,
@@ -758,9 +784,9 @@ class MainWindow(QWidget):
             value
         )
 
-    # -------------------------
+    # =========================================================
     # UPDATE STATUS
-    # -------------------------
+    # =========================================================
 
     def update_status(
         self,
@@ -771,9 +797,9 @@ class MainWindow(QWidget):
             text
         )
 
-    # -------------------------
+    # =========================================================
     # DOWNLOAD FINISHED
-    # -------------------------
+    # =========================================================
 
     def download_finished(self):
 
@@ -795,9 +821,9 @@ class MainWindow(QWidget):
             "Download completed successfully."
         )
 
-    # -------------------------
-    # DOWNLOAD ERROR
-    # -------------------------
+    # =========================================================
+    # DOWNLOAD FAILED
+    # =========================================================
 
     def download_failed(
         self,
@@ -819,9 +845,9 @@ class MainWindow(QWidget):
         )
 
 
-# -------------------------
+# =========================================================
 # START APPLICATION
-# -------------------------
+# =========================================================
 
 if __name__ == "__main__":
 
