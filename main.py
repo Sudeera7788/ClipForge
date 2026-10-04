@@ -20,6 +20,17 @@ from PySide6.QtWidgets import (
 
 
 # =========================================================
+# APP INFO
+# =========================================================
+
+APP_NAME = "ClipForge"
+APP_VERSION = "1.0.1"
+APP_DEVELOPER = "Sudeera Dilhan Fernando"
+APP_COUNTRY = "Sri Lanka"
+APP_RELEASE_DATE = "4 October 2026"
+
+
+# =========================================================
 # RESOURCE PATH
 # Works in normal Python mode and PyInstaller --onefile mode
 # =========================================================
@@ -265,7 +276,7 @@ class MainWindow(QWidget):
         self.worker = None
 
         self.setWindowTitle(
-            "ClipForge"
+            APP_NAME
         )
 
         self.resize(
@@ -286,7 +297,7 @@ class MainWindow(QWidget):
         # =====================================================
 
         title = QLabel(
-            "ClipForge"
+            APP_NAME
         )
 
         title.setStyleSheet(
@@ -525,7 +536,7 @@ class MainWindow(QWidget):
         )
 
         about_button = QPushButton(
-            "About ClipForge"
+            f"About {APP_NAME}"
         )
 
         about_button.clicked.connect(
@@ -575,7 +586,7 @@ class MainWindow(QWidget):
             ])
 
     # =========================================================
-    # PASTE
+    # PASTE URL
     # =========================================================
 
     def paste_url(self):
@@ -587,7 +598,7 @@ class MainWindow(QWidget):
         )
 
     # =========================================================
-    # CLEAR
+    # CLEAR URL
     # =========================================================
 
     def clear_url(self):
@@ -646,30 +657,30 @@ class MainWindow(QWidget):
 
         QMessageBox.about(
             self,
-            "About ClipForge",
-            """
+            f"About {APP_NAME}",
+            f"""
             <div style="text-align:center;">
 
-            <h2>ClipForge</h2>
+            <h2>{APP_NAME}</h2>
 
             <p>
             <b>Video & Audio Downloader</b>
             </p>
 
             <p>
-            Version 1.0.0
+            <b>Version:</b> {APP_VERSION}
             </p>
 
             <hr>
 
             <p>
             <b>Developed by</b><br>
-            Sudeera Dilhan Fernando
+            {APP_DEVELOPER}
             </p>
 
             <p>
-            <b>Country:</b> Sri Lanka<br>
-            <b>Release Date:</b> 1 October 2026
+            <b>Country:</b> {APP_COUNTRY}<br>
+            <b>Release Date:</b> {APP_RELEASE_DATE}
             </p>
 
             <hr>
@@ -693,7 +704,7 @@ class MainWindow(QWidget):
             </p>
 
             <p>
-            © 2026 Sudeera Dilhan Fernando
+            © 2026 {APP_DEVELOPER}
             </p>
 
             </div>
@@ -726,9 +737,6 @@ class MainWindow(QWidget):
             self.quality_combo.currentText()
         )
 
-        # This now works both:
-        # 1. while developing with Python
-        # 2. inside a PyInstaller --onefile EXE
         ffmpeg_path = resource_path(
             "bin"
         )
@@ -817,7 +825,7 @@ class MainWindow(QWidget):
 
         QMessageBox.information(
             self,
-            "ClipForge",
+            APP_NAME,
             "Download completed successfully."
         )
 
@@ -840,7 +848,7 @@ class MainWindow(QWidget):
 
         QMessageBox.critical(
             self,
-            "ClipForge - Download Error",
+            f"{APP_NAME} - Download Error",
             error
         )
 
@@ -856,11 +864,11 @@ if __name__ == "__main__":
     )
 
     app.setApplicationName(
-        "ClipForge"
+        APP_NAME
     )
 
     app.setApplicationVersion(
-        "1.0.0"
+        APP_VERSION
     )
 
     window = MainWindow()
